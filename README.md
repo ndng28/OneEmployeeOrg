@@ -48,6 +48,8 @@ This project uses a structured skill system for AI agent workflows:
 
 Full skill registry in [AGENTS.md](./AGENTS.md#superpowers-skills-registry).
 
+Powered by [obra/superpowers](https://github.com/obra/superpowers).
+
 ## Roadmap
 
 ### Phase 1 (Current)
