@@ -1,0 +1,176 @@
+version: 1
+last_updated: 2026-03-12
+
+# Reference to upstream IC pool
+agency_agents_ref: vendor/agency-agents
+agency_agents_commit: "main"
+
+# Agent Hierarchy Documentation
+# L1: Orchestration Layer - Persistent, stateful agents that manage the organization
+# L2: Coordination Layer - Domain-specific coordinators that manage ICs
+# L3: Individual Contributors - Execution agents from agency-agents (instantiated on-demand)
+
+hierarchy:
+  L1:
+    chief-of-staff:
+      name: "Chief of Staff"
+      description: "Primary orchestrator and advisor to the CEO"
+      source: local
+      path: agents/L1/chief-of-staff.md
+      status: active
+      reports_to: "CEO"
+      capabilities:
+        - orchestrate_multi_agent_workflows
+        - delegate_to_L2_coordinators
+        - make_strategic_recommendations
+        - escalate_to_CEO
+      managed_by: null
+      
+    ar-agent:
+      name: "Agent Resources (AR)"
+      description: "Hiring manager, roster maintainer, agency-agents updater"
+      source: local
+      path: agents/L1/ar-agent.md
+      status: active
+      reports_to: "chief-of-staff"
+      capabilities:
+        - update_vendor_repo
+        - create_L2_coordinator
+        - instantiate_L3_agent
+        - update_roster
+        - lock_to_commit
+      managed_by: "chief-of-staff"
+      escalation_required_for:
+        - create_new_L1_agent
+        - vendor_repo_major_version_change
+
+  L2:
+    operations-coordinator:
+      name: "Operations Coordinator"
+      description: "Manages storefronts, warehouse, and daily operations"
+      source: local
+      path: agents/L2/operations-coordinator.md
+      status: active
+      reports_to: "chief-of-staff"
+      domain: operations
+      manages:
+        - project-shepherd
+        - studio-operations
+        - infrastructure-maintainer
+      
+    finance-coordinator:
+      name: "Finance Coordinator"
+      description: "Manages budgets, payments, and vendor finance"
+      source: local
+      path: agents/L2/finance-coordinator.md
+      status: active
+      reports_to: "chief-of-staff"
+      domain: finance
+      manages:
+        - finance-tracker
+        - accounts-payable-agent
+        - compliance-auditor
+      
+    inventory-coordinator:
+      name: "Inventory Coordinator"
+      description: "Manages stock, supply chain, and inventory systems"
+      source: local
+      path: agents/L2/inventory-coordinator.md
+      status: active
+      reports_to: "chief-of-staff"
+      domain: inventory
+      manages:
+        - data-consolidation-agent
+        - report-distribution-agent
+        - analytics-reporter
+
+  L3:
+    # Operations ICs
+    project-shepherd:
+      name: "Project Shepherd"
+      description: "Cross-functional coordination, timeline management"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/project-management/project-management-project-shepherd.md
+      status: available
+      reports_to: operations-coordinator
+      instantiation: on-demand
+      
+    studio-operations:
+      name: "Studio Operations"
+      description: "Day-to-day efficiency, process optimization"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/project-management/project-management-studio-operations.md
+      status: available
+      reports_to: operations-coordinator
+      instantiation: on-demand
+      
+    infrastructure-maintainer:
+      name: "Infrastructure Maintainer"
+      description: "System reliability, performance optimization"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/support/support-infrastructure-maintainer.md
+      status: available
+      reports_to: operations-coordinator
+      instantiation: on-demand
+      
+    # Finance ICs
+    finance-tracker:
+      name: "Finance Tracker"
+      description: "Financial planning, budget management"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/support/support-finance-tracker.md
+      status: available
+      reports_to: finance-coordinator
+      instantiation: on-demand
+      
+    accounts-payable-agent:
+      name: "Accounts Payable Agent"
+      description: "Payment processing, vendor management, audit"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/specialized/accounts-payable-agent.md
+      status: available
+      reports_to: finance-coordinator
+      instantiation: on-demand
+      
+    compliance-auditor:
+      name: "Compliance Auditor"
+      description: "SOC 2, ISO 27001, HIPAA, PCI-DSS"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/specialized/compliance-auditor.md
+      status: available
+      reports_to: finance-coordinator
+      instantiation: on-demand
+      
+    # Inventory ICs
+    data-consolidation-agent:
+      name: "Data Consolidation Agent"
+      description: "Sales data aggregation, dashboard reports"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/specialized/data-consolidation-agent.md
+      status: available
+      reports_to: inventory-coordinator
+      instantiation: on-demand
+      
+    report-distribution-agent:
+      name: "Report Distribution Agent"
+      description: "Automated report delivery"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/specialized/report-distribution-agent.md
+      status: available
+      reports_to: inventory-coordinator
+      instantiation: on-demand
+      
+    analytics-reporter:
+      name: "Analytics Reporter"
+      description: "Data analysis, dashboards, insights"
+      source: vendor/agency-agents
+      path: vendor/agency-agents/support/support-analytics-reporter.md
+      status: available
+      reports_to: inventory-coordinator
+      instantiation: on-demand
+
+# Notes on Agent Lifecycle
+# - L1 agents are persistent (always active)
+# - L2 coordinators are persistent but can be added/removed by AR with CoS approval
+# - L3 ICs are instantiated on-demand by their L2 coordinator
+# - L3 ICs should not maintain state between tasks; state belongs to coordinators

@@ -13,29 +13,58 @@ The organization operates with AI agents fulfilling operational roles traditiona
 
 ## AI Agent Architecture
 
-The organization uses an agentic scaffolding system where AI agents operate as:
-- **Chief of Staff** (this agent): Advisor, executor, coordination
-- Additional agent roles to be defined based on operational needs
+### Hierarchy
 
-See [AGENTS.md](./AGENTS.md) for the complete agent guide and decision frameworks.
+```
+CEO (Human)
+    │
+    ▼
+Chief of Staff (L1 - Orchestration Layer)
+    │
+    ├── AR Agent (L1 - Agent Resources)
+    │       │
+    │       └── agency-agents repo (IC pool)
+    │
+    └── Coordinators (L2 - Coordination Layer)
+            │
+            ├── Operations Coordinator
+            ├── Finance Coordinator
+            └── Inventory Coordinator
+```
+
+### Agent Levels
+
+- **L1: Orchestration Layer** - Chief of Staff (primary orchestrator) and AR Agent (hiring manager)
+- **L2: Coordination Layer** - Domain coordinators managing ICs within their domain
+- **L3: Individual Contributors** - Execution agents from [agency-agents](https://github.com/msitarzewski/agency-agents)
+
+See [AGENTS.md](./AGENTS.md) for complete agent definitions and decision frameworks.
 
 ## Development
 
 ### Prerequisites
 - OpenCode CLI
+- Git (with submodule support)
 
 ### Getting Started
 ```bash
-git clone https://github.com/ndng28/OneEmployeeOrg.git
+git clone --recurse-submodules https://github.com/ndng28/OneEmployeeOrg.git
 cd OneEmployeeOrg
 ```
 
 ### Project Structure
 ```
 OneEmployeeOrg/
-├── AGENTS.md          # AI agent configuration and protocols
-├── README.md          # This file
-└── .gitignore         # Git ignore patterns
+├── AGENTS.md                # AI agent configuration and protocols
+├── README.md               # This file
+├── .gitignore              # Git ignore patterns
+├── agents/
+│   ├── L1/                 # L1 agent definitions (Chief of Staff, AR)
+│   ├── L2/                 # L2 coordinator definitions
+│   ├── L3/                 # L3 IC references (ephemeral)
+│   └── roster.yaml         # Structured agent registry
+└── vendor/
+    └── agency-agents/      # Git submodule (IC pool)
 ```
 
 ## Superpowers Skills
@@ -54,12 +83,12 @@ Powered by [obra/superpowers](https://github.com/obra/superpowers).
 
 ### Phase 1 (Current)
 - OpenCode CLI support
-- Core agentic scaffolding
-- Basic agent roles
+- Core agentic scaffolding with L1/L2/L3 hierarchy
+- Operations, Finance, and Inventory coordinators
 
 ### Phase 2 (Planned)
 - Additional CLI support (Ollama, Claude, etc.)
-- Extended agent role definitions
+- Extended coordinator roles (Sales, Support, Marketing)
 - Vendor integration workflows
 
 ## License
