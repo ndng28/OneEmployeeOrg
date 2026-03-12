@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+*.swp
+*.swo
+*~
+.Trashes
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Logs
+*.log
+logs/
