@@ -1,8 +1,16 @@
 import pytest
+from httpx import AsyncClient, ASGITransport
 from oneorg.services.auth import (
     get_password_hash, verify_password, create_user,
     authenticate_user, create_access_token, get_current_user
 )
+
+# Import conditionally - routes may not be wired yet
+try:
+    from oneorg.api.main import app
+    HAS_APP = True
+except ImportError:
+    HAS_APP = False
 
 
 @pytest.mark.asyncio
@@ -73,3 +81,45 @@ async def test_password_hash_uniqueness():
     # Both should verify correctly
     assert verify_password(password, hash1) is True
     assert verify_password(password, hash2) is True
+
+
+# Route tests - require full app integration (Chunk 5)
+@pytest.mark.skipif(not HAS_APP, reason="FastAPI app not fully configured")
+@pytest.mark.asyncio
+async def test_register_api():
+    """Test API registration endpoint."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.post("/api/auth/register", json={
+            "email": "route_test@example.com",
+            "password": "testpass123",
+            "name": "Test User",
+            "grade_level": 5
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert "student_id" in data
+
+
+@pytest.mark.skipif(not HAS_APP, reason="FastAPI app not fully configured")
+@pytest.mark.asyncio
+async def test_login_api():
+    """Test API login endpoint."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # First register
+        await client.post("/api/auth/register", json={
+            "email": "login_test@example.com",
+            "password": "testpass123",
+            "name": "Login Test",
+            "grade_level": 6
+        })
+        
+        # Then login
+        response = await client.post("/api/auth/login", json={
+            "email": "login_test@example.com",
+            "password": "testpass123"
+        })
+        assert response.status_code == 200
+        data = response.json()
+        assert "access_token" in data
