@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
     <div class="header">
-        <h1>Hello, {{ name }}! 👋</h1>
+        <h1>Hello, {{ student.name }}! 👋</h1>
         <nav class="nav">
             <a href="/dashboard">Dashboard</a>
             <a href="/quests">Quests</a>
@@ -15,47 +15,100 @@
     </div>
     
     {% if request.query_params.success == 'quest_completed' %}
-    <div class="success">🎉 Quest completed! XP earned!</div>
+    <div class="success">🎉 Quest completed! Great job!</div>
     {% endif %}
     
+    <!-- Age-Appropriate Display Mode -->
+    {% if student.age_mode.value == "5-8" %}
+    <div class="card age-young">
+        <div class="age-display">
+            <div class="stars-display">
+                <span class="stars-icon">⭐</span>
+                <span class="stars-count">{{ student.xp // 10 }}</span>
+                <span class="stars-label">Stars!</span>
+            </div>
+            <p class="age-message">You've completed {{ student.quests_completed|length }} quests!</p>
+        </div>
+    </div>
+    {% elif student.age_mode.value == "9-12" %}
+    <div class="card age-middle">
+        <div class="age-display">
+            <div class="points-display">
+                <span class="points-icon">🎯</span>
+                <span class="points-count">{{ student.xp }}</span>
+                <span class="points-label">Points</span>
+            </div>
+            <p class="age-message">Level {{ student.level }} • {{ student.xp_to_next_level }} points to next level</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="card age-teen">
+        <div class="age-display">
+            <div class="xp-display">
+                <span class="xp-icon">🎓</span>
+                <span class="xp-count">{{ student.xp }}</span>
+                <span class="xp-label">XP</span>
+            </div>
+            <p class="age-message">Level {{ student.level }} ({{ student.xp_to_next_level }} XP to level {{ student.level + 1 }})</p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Activity Calendar (replacing streak pressure) -->
+    <div class="card calendar-card">
+        <h3 class="calendar-title">📅 {{ calendar_summary.message }}</h3>
+        <div class="week-view">
+            {% for date_str, active in week_view.items() %}
+            <div class="day {% if active %}active{% endif %}">
+                <span class="day-number">{{ date_str[-2:] }}</span>
+                {% if active %}
+                <span class="day-dot">●</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Stats Grid -->
     <div class="grid">
-        <div class="card">
+        <div class="card stat-card">
             <div class="stat">
-                <div class="stat-value">{{ level }}</div>
+                <div class="stat-value">{{ student.level }}</div>
                 <div class="stat-label">Level</div>
             </div>
         </div>
         
-        <div class="card">
+        <div class="card stat-card">
             <div class="stat">
-                <div class="stat-value">{{ xp }}</div>
+                <div class="stat-value">{{ student.xp }}</div>
                 <div class="stat-label">Total XP</div>
             </div>
         </div>
         
-        <div class="card">
+        <div class="card stat-card">
             <div class="stat">
-                <div class="stat-value">{{ xp_to_next }}</div>
+                <div class="stat-value">{{ student.xp_to_next_level }}</div>
                 <div class="stat-label">XP to Next Level</div>
             </div>
         </div>
         
-        <div class="card">
+        <div class="card stat-card">
             <div class="stat">
-                <div class="stat-value">{{ streak }} 🔥</div>
-                <div class="stat-label">Day Streak</div>
+                <div class="stat-value">{{ student.quests_completed|length }}</div>
+                <div class="stat-label">Quests Completed</div>
             </div>
         </div>
     </div>
     
+    <!-- Recent Quests -->
     <div class="card">
         <h2 style="margin-bottom: 16px;">Recent Quests</h2>
-        {% if recent_completions %}
+        {% if student.quests_completed %}
         <div style="display: flex; flex-direction: column; gap: 12px;">
-            {% for completion in recent_completions %}
+            {% for completion in student.quests_completed[:5] %}
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
-                <span>{{ completion.quest_title }}</span>
-                <span style="color: #667eea; font-weight: bold;">+{{ completion.xp }} XP</span>
+                <span>Quest completed!</span>
+                <span style="color: #667eea; font-weight: bold;">+{{ completion.xp_earned }} XP</span>
             </div>
             {% endfor %}
         </div>
@@ -64,17 +117,30 @@
         {% endif %}
     </div>
     
-    {% if badges %}
-    <div class="card">
-        <h2 style="margin-bottom: 16px;">Badges</h2>
-        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-            {% for badge in badges %}
-            <div style="text-align: center; padding: 16px; background: #f5f5f5; border-radius: 12px;">
-                <div style="font-size: 2em;">{{ badge.icon }}</div>
-                <div style="font-weight: bold; margin-top: 8px;">{{ badge.name }}</div>
+    <!-- Badges (no rarity indicators) -->
+    {% if student.badges %}
+    <div class="card badges-section">
+        <h2 style="margin-bottom: 16px;">🏅 Your Badges</h2>
+        <div class="badge-list">
+            {% for badge in student.badges %}
+            <div class="badge earned">
+                <span class="badge-icon">{{ badge.icon }}</span>
+                <span class="badge-name">{{ badge.name }}</span>
+                <span class="badge-desc">{{ badge.description }}</span>
             </div>
             {% endfor %}
         </div>
+    </div>
+    {% endif %}
+    
+    <!-- Leaderboard Opt-in Prompt -->
+    {% if show_leaderboard_prompt %}
+    <div class="card leaderboard-prompt">
+        <h3>🏆 Want to see how you're doing?</h3>
+        <p>You can choose to show your progress on the leaderboard. It's totally up to you!</p>
+        <button class="btn btn-secondary" hx-post="/leaderboard/opt-in" hx-swap="outerHTML">
+            Yes, show me on the leaderboard!
+        </button>
     </div>
     {% endif %}
 </div>

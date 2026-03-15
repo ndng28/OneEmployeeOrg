@@ -51,11 +51,58 @@ async def register_page(request: Request):
 
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, student = Depends(require_auth), db: AsyncSession = Depends(get_db)):
-    """Student dashboard."""
-    progress = await get_student_progress(db, student.id)
+    """Student dashboard with age-appropriate gamification display."""
+    # Import StudentProgress model for dashboard data
+    from oneorg.models.student import StudentProgress, QuestCompletion, Badge
+    from datetime import datetime
+    
+    # Convert database student to StudentProgress model
+    # This assumes student has the necessary fields from the DB model
+    student_progress = StudentProgress(
+        student_id=str(student.student_id) if hasattr(student, 'student_id') else str(student.id),
+        name=student.name,
+        grade_level=student.grade_level if hasattr(student, 'grade_level') else 5,
+        xp=student.xp if hasattr(student, 'xp') else 0,
+    )
+    
+    # Add quests completed if available
+    if hasattr(student, 'quest_completions'):
+        for qc in student.quest_completions:
+            completion = QuestCompletion(
+                quest_id=str(qc.quest_id),
+                quest_master="system",
+                xp_earned=qc.xp_earned if hasattr(qc, 'xp_earned') else 10,
+                completed_at=qc.completed_at if hasattr(qc, 'completed_at') else datetime.now(),
+                score=qc.score if hasattr(qc, 'score') else 1.0,
+            )
+            student_progress.quests_completed.append(completion)
+    
+    # Add badges if available
+    if hasattr(student, 'student_badges'):
+        for sb in student.student_badges:
+            if hasattr(sb, 'badge'):
+                badge = Badge(
+                    badge_id=str(sb.badge.badge_id) if hasattr(sb.badge, 'badge_id') else str(sb.badge.id),
+                    name=sb.badge.name,
+                    description=sb.badge.description if hasattr(sb.badge, 'description') else "",
+                    icon=sb.badge.icon if hasattr(sb.badge, 'icon') else "🏅",
+                )
+                student_progress.badges.append(badge)
+    
+    # Prepare dashboard data with new gamification system
+    dashboard_data = {
+        "student": student_progress,
+        "age_mode": student_progress.age_mode,
+        "calendar_summary": student_progress.calendar.get_recent_month_summary(),
+        "week_view": student_progress.calendar.get_recent_week(),
+        "badges": student_progress.badges,
+        # Don't show leaderboard by default - opt-in only
+        "show_leaderboard_prompt": not student_progress.leaderboard_settings.show_on_leaderboard,
+    }
+    
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
-        **progress
+        **dashboard_data
     })
 
 @router.get("/quests", response_class=HTMLResponse)
@@ -90,3 +137,30 @@ async def quest_detail(request: Request, quest_id: str, db: AsyncSession = Depen
 async def profile(request: Request, student = Depends(require_auth), db: AsyncSession = Depends(get_db)):
     """Profile page (redirects to dashboard for now)."""
     return RedirectResponse("/dashboard", status_code=302)
+
+
+@router.post("/leaderboard/opt-in")
+async def opt_in_leaderboard(request: Request, student = Depends(require_auth), db: AsyncSession = Depends(get_db)):
+    """Allow students to opt-in to leaderboard visibility."""
+    try:
+        # Update student's leaderboard settings
+        if hasattr(student, 'leaderboard_opt_in'):
+            student.leaderboard_opt_in = True
+        elif hasattr(student, 'show_on_leaderboard'):
+            student.show_on_leaderboard = True
+        
+        # Set display name if not already set
+        if hasattr(student, 'leaderboard_display_name') and not student.leaderboard_display_name:
+            student.leaderboard_display_name = student.name
+        
+        await db.commit()
+        
+        # Return success message that replaces the prompt
+        return HTMLResponse(
+            content='<div class="success">🎉 You\'re now visible on the leaderboard! <a href="/leaderboard">View Leaderboard</a></div>'
+        )
+    except Exception as e:
+        return HTMLResponse(
+            content=f'<div class="error">Could not opt-in: {str(e)}</div>',
+            status_code=500
+        )

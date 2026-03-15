@@ -115,6 +115,149 @@
             border-radius: 8px;
             margin-bottom: 16px;
         }
+        
+        /* Age-Appropriate Display Modes */
+        .age-display {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .age-young {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+        
+        .age-middle {
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fd6c3 100%);
+        }
+        
+        .age-teen {
+            background: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+        }
+        
+        .stars-display, .points-display, .xp-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .stars-icon, .points-icon, .xp-icon {
+            font-size: 2em;
+        }
+        
+        .stars-count, .points-count, .xp-count {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2d3436;
+        }
+        
+        .stars-label, .points-label, .xp-label {
+            font-size: 1.5em;
+            color: #636e72;
+        }
+        
+        .age-message {
+            font-size: 1.1em;
+            color: #2d3436;
+            margin-top: 8px;
+        }
+        
+        /* Activity Calendar */
+        .calendar-card {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+        
+        .calendar-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .week-view {
+            display: flex;
+            justify-content: space-around;
+            gap: 8px;
+        }
+        
+        .day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            min-width: 50px;
+        }
+        
+        .day.active {
+            background: rgba(255,255,255,0.9);
+            color: #0984e3;
+            font-weight: bold;
+        }
+        
+        .day-number {
+            font-size: 1.2em;
+        }
+        
+        .day-dot {
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+        
+        /* Badges Section */
+        .badges-section {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+        }
+        
+        .badge-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 12px;
+            color: #2d3436;
+        }
+        
+        .badge-icon {
+            font-size: 2em;
+        }
+        
+        .badge-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .badge-desc {
+            color: #636e72;
+            font-size: 0.9em;
+            margin-left: auto;
+        }
+        
+        /* Leaderboard Prompt */
+        .leaderboard-prompt {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .leaderboard-prompt h3 {
+            margin-bottom: 12px;
+        }
+        
+        .leaderboard-prompt p {
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
