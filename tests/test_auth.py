@@ -88,10 +88,11 @@ async def test_password_hash_uniqueness():
 @pytest.mark.asyncio
 async def test_register_api():
     """Test API registration endpoint."""
+    import uuid
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.post("/api/auth/register", json={
-            "email": "route_test@example.com",
+            "email": f"route_test_{uuid.uuid4().hex[:8]}@example.com",
             "password": "testpass123",
             "name": "Test User",
             "grade_level": 5
@@ -105,11 +106,13 @@ async def test_register_api():
 @pytest.mark.asyncio
 async def test_login_api():
     """Test API login endpoint."""
+    import uuid
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
+        unique_email = f"login_test_{uuid.uuid4().hex[:8]}@example.com"
         # First register
         await client.post("/api/auth/register", json={
-            "email": "login_test@example.com",
+            "email": unique_email,
             "password": "testpass123",
             "name": "Login Test",
             "grade_level": 6
@@ -117,7 +120,7 @@ async def test_login_api():
         
         # Then login
         response = await client.post("/api/auth/login", json={
-            "email": "login_test@example.com",
+            "email": unique_email,
             "password": "testpass123"
         })
         assert response.status_code == 200
