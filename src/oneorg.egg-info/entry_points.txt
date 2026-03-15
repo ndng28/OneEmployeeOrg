@@ -1,0 +1,2 @@
+[console_scripts]
+oneorg = oneorg.cli:main

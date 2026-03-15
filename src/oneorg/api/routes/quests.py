@@ -2,32 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-try:
-    from oneorg.db.database import get_db
-except ImportError:
-    # Database not available yet - will be integrated in Chunk 5
-    async def get_db():
-        raise HTTPException(status_code=503, detail="Database not available")
-
-try:
-    from oneorg.services.quest_engine import (
-        get_available_quests, get_quest, complete_quest, get_student_progress
-    )
-except ImportError:
-    # Quest engine not fully available
-    async def get_available_quests(db, student_id): return []
-    async def get_quest(db, quest_id): return None
-    async def complete_quest(db, student_id, quest_id, score=1.0, feedback=None): 
-        raise ValueError("Quest engine not available")
-    async def get_student_progress(db, student_id): 
-        raise ValueError("Quest engine not available")
-
-try:
-    from oneorg.services.auth import get_current_user
-except ImportError:
-    # Auth not available yet
-    async def get_current_user(db, token):
-        return None
+from oneorg.db.database import get_db
+from oneorg.services.quest_engine import (
+    get_available_quests, get_quest, complete_quest, get_student_progress
+)
+from oneorg.services.auth import get_current_user
 
 router = APIRouter()
 
@@ -35,10 +14,7 @@ router = APIRouter()
 async def get_current_student_id(request: Request, db: AsyncSession = Depends(get_db)):
     """Get current student ID from session cookie."""
     from sqlalchemy import select
-    try:
-        from oneorg.db.models import Student
-    except ImportError:
-        raise HTTPException(status_code=503, detail="Database models not available")
+    from oneorg.db.models import Student
     
     token = request.cookies.get("access_token")
     if not token:
@@ -106,10 +82,7 @@ async def complete_quest_api(
 ):
     """Complete a quest via API."""
     from sqlalchemy import select
-    try:
-        from oneorg.db.models import Quest
-    except ImportError:
-        raise HTTPException(status_code=503, detail="Database models not available")
+    from oneorg.db.models import Quest
     
     result = await db.execute(select(Quest).where(Quest.quest_id == quest_id))
     quest = result.scalar()
@@ -142,10 +115,7 @@ async def complete_quest_form(
 ):
     """Complete quest via form submission."""
     from sqlalchemy import select
-    try:
-        from oneorg.db.models import Quest
-    except ImportError:
-        return RedirectResponse("/quests?error=not_found", status_code=302)
+    from oneorg.db.models import Quest
     
     result = await db.execute(select(Quest).where(Quest.quest_id == quest_id))
     quest = result.scalar()
