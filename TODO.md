@@ -1,6 +1,48 @@
 # TODO
 
-## High Priority (Next 2 Weeks)
+## Phase 0: Remove Harmful Mechanics (Week 1) - CRITICAL
+- [ ] Remove badge rarity tiers (Common → Legendary) - variable reward mechanics
+- [ ] Remove longest_streak field - loss aversion trigger
+- [ ] Remove Team competition mechanics
+- [ ] Make leaderboard opt-in by default (currently public)
+- [ ] Replace CLI leaderboard command with personal progress command
+
+## Phase 1: Age Modes + Healthy Gamification (Weeks 2-3) - HIGH PRIORITY
+- [ ] Create AgeMode enum with 3 profiles: 5-8, 9-12, 13-18
+- [ ] Add AgeMode computed field to StudentProgress
+- [ ] Implement predictable XP system (no randomness)
+- [ ] Create effort-based badge criteria (replaces achievement-only)
+- [ ] Build consistency calendar (positive framing, no streak shaming)
+- [ ] Update CLI progress command for age-appropriate display
+
+## Phase 2: AI Quest Masters (Weeks 4-5) - HIGH PRIORITY
+- [ ] Create AI Quest Master schema with new fields:
+  - relationship_model: "senior_apprentice" (not "expert")
+  - knowledge_stance: transparent limitations
+  - failure_modeling: True (shows mistakes)
+  - ai_disclosure: mandatory transparency
+  - human_bridge_prompts: connects to humans
+- [ ] Rewrite 3 pilot Quest Masters with new personas
+- [ ] Implement AI transparency reminders (periodic)
+- [ ] Add failure normalization prompts
+- [ ] Build boundary enforcement when attachment detected
+
+## Phase 3: Family Integration (Weeks 6-7) - MEDIUM PRIORITY
+- [ ] Create parent dashboard with weekly stories (not metrics)
+- [ ] Implement conversation starter engine
+- [ ] Build family quest system (optional, solo-capable)
+- [ ] Add screen time management (platform enforces)
+- [ ] Create wind-down mode before sleep
+- [ ] Add multilingual support (12+ languages)
+- [ ] Implement "Ask someone" help button
+
+## Phase 4: Polish + i18n (Weeks 8-9) - LOW PRIORITY
+- [ ] Add personalized conversation starters
+- [ ] Expand family quest variety
+- [ ] Advanced time scheduling
+- [ ] Cultural adaptation engine
+
+## High Priority (Next 2 Weeks) - Pre-Expert
 - [ ] Wire gamification logic to API endpoints (CRUD for students, quests, progress)
 - [ ] Implement class code authentication (teacher PIN, student codes, session cookies)
 - [ ] Create HTMX dashboard templates (leaderboard, student profile, badge gallery)

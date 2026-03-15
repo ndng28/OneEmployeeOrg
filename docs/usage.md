@@ -22,8 +22,11 @@ oneorg index
 # Search quest masters
 oneorg search "frontend"
 
-# View leaderboard
-oneorg leaderboard --limit 20
+# View personal progress (replaces leaderboard)
+oneorg progress stu_001
+
+# View age-appropriate content
+oneorg progress stu_001 --age-mode
 ```
 
 ### Decision Gates
@@ -99,14 +102,25 @@ Features:
 - Weekly progress reports
 
 ### Student Dashboard
-Students access their dashboard after joining via class code.
+Students access their dashboard after joining via class code. Display is **age-appropriate**:
 
-Features:
-- XP progress bar
-- Quest completion history
-- Badge gallery
-- Current streak display
-- Leaderboard position
+**Ages 5-8 (Young Child):**
+- Adventure map progress (no XP/levels shown)
+- Simple badges only (effort-based)
+- Family quest options
+- Session timer visible to child
+
+**Ages 9-12 (Preteen):**
+- XP visible, clear progress bars
+- Consistency calendar (not "streak")
+- Badge gallery with effort categories
+- Quest choice options
+
+**Ages 13-18 (Teen):**
+- Full XP/levels visible (optional to hide)
+- Self-directed goal setting
+- Opt-in social features (study groups)
+- Custom session limits
 
 ## Configuration
 

@@ -48,3 +48,62 @@
 - SQLite: handles 10K users, 100s concurrent reads
 - PostgreSQL: needed at >50 concurrent writes
 - Redis: consider for leaderboard cache at scale
+
+## Neuroscience-Informed Design
+
+### Dopaminergic System Protection
+- **Variable rewards prohibited**: Loot boxes, random drops damage developing prefrontal cortex
+- **Predictable XP formula**: `time_minutes × 5 XP/min × difficulty_multiplier` - never random
+- **Effort bonuses only**: 10% per retry (max 50%), rewards persistence not luck
+- **No loss aversion**: Remove streaks with punishment, celebrate consistency without fear
+
+### Age-Appropriate Feature Gating
+- **5-8 years (Young Child)**: No XP/levels/streaks visible, minimal gamification
+- **9-12 years (Preteen)**: XP visible but no leaderboards, introduce carefully
+- **13-18 years (Teen)**: Optional features, self-directed, can disable entirely
+
+### Social Evaluation Sensitivity
+- Adolescents hypersensitive to social ranking (amygdala response to exclusion)
+- Private progress default, public comparison opt-in only
+- No zero-sum competition, cooperative structures preferred
+- Celebration language: "You completed this!" not "You're ranked #47"
+
+## AI Quest Master Design
+
+### Persona Requirements
+- **Senior apprentice model**: "I'm a few steps ahead on this path" not "I'm an expert"
+- **Failure modeling**: Show mistakes, wrong turns, recovery process
+- **Transparency**: "I'm an AI tool" reminders every ~10 interactions
+- **Boundary enforcement**: Decline relationship-building attempts, redirect to humans
+
+### Socratic Dialogue Pattern
+1. **QUESTION**: Start with curiosity ("What do you think?")
+2. **GUIDE**: Offer hints, not answers
+3. **STRUGGLE**: Narrate thinking process including mistakes
+4. **VALIDATE**: Acknowledge effort and thinking process
+5. **BRIDGE**: Connect to human teachers/family
+
+### Required Disclosures
+- Onboarding: "I'm an AI, not a person. Teachers and family are your real guides."
+- Periodic: "Quick reminder: I'm an AI guide."
+- Before personal disclosure: "I'm an AI, so I can't really understand feelings..."
+
+## Family Integration Patterns
+
+### Screen Time Management
+- Platform enforces, parent sets preferences (parent never "bad guy")
+- Wind-down mode: 6-8pm calmer content, 8pm+ rest mode
+- No hard cutoff mid-quest: complete current, then graceful ending
+- Streak freezes earnable through offline family activities
+
+### Conversation Starters (Not Progress Bars)
+- "What did you wonder about this week?"
+- "Show me something you got better at"
+- "What was tricky? How did you figure it out?"
+- "Can you teach me something you learned?"
+
+### Red Lines (Never Implement)
+- Real-time activity feed (surveillance)
+- "You played X hours today" (time policing)
+- Leaderboard position in parent dashboard (comparison pressure)
+- "Help with homework" framing (assumes parent expertise)

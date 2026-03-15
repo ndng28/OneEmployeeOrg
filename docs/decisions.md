@@ -82,3 +82,43 @@
 - Teachers prompt AI, maintain control
 - Compete on depth, not breadth
 **Key Differentiator:** Teachers assign, AI adapts, you see the journey
+
+## 2024-03-13: Gamification Mechanics - Expert-Informed Revision
+**Context:** Child psychologist, neuroscientist, and ethics experts identified harmful mechanics in current design
+**Decision:** Remove variable rewards, loss aversion, and social pressure; implement age-appropriate modes
+**Rationale:**
+- Variable rewards (rarity tiers) = gambling mechanics, damage dopaminergic system
+- Loss aversion (longest streak) creates anxiety, undermines intrinsic motivation
+- Social pressure (default leaderboards) toxic for developing self-concept
+- Age modes: 5-8 minimal, 9-12 careful, 13-18 optional respects developmental stages
+**Changes:**
+- REMOVE: Badge rarity tiers, longest_streak tracking, Team competition, default leaderboards
+- ADD: Predictable XP, effort-based badges, consistency calendar (positive framing), age-specific modes
+
+## 2024-03-13: AI Quest Master Relationship Model
+**Context:** Philosophers and child psychologists raised concerns about AI-student relationships
+**Decision:** Shift from "expert agents" to "senior apprentice guides"
+**Rationale:**
+- Socratic model (guide, midwife) NOT Platonic (embodies wisdom) - AI cannot be good
+- Risk of false intimacy without reciprocity - children form attachments to AI
+- Transparency about AI nature required with periodic reminders
+- Every AI interaction should deepen human connection (human bridge prompts)
+**New Schema:**
+- relationship_model: "senior_apprentice" (NOT "expert")
+- knowledge_stance: transparent about limitations
+- failure_modeling: True - shows mistakes and recovery
+- ai_disclosure: mandatory transparency statement
+
+## 2024-03-13: Family Integration Design
+**Context:** Family systems expert identified risks to family dynamics from screen-based learning
+**Decision:** Parents are learning partners, not enforcement police; platform enforces limits
+**Rationale:**
+- Platform as "bad guy" for time limits prevents parent-child battles
+- Parent dashboard shows weekly stories (not surveillance metrics)
+- Family quests optional but earn offline value (streak freezes)
+- Multilingual support from day one for diverse families
+**Key Features:**
+- Wind-down mode before sleep (neuroscience-informed)
+- Conversation starter engine ("what did you wonder about?")
+- "Ask someone" help button (not "ask parent")
+- 12+ language support
