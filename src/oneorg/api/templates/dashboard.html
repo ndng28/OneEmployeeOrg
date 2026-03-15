@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - OneEmployeeOrg Academy{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>Hello, {{ name }}! 👋</h1>
+        <nav class="nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/quests">Quests</a>
+            <a href="/profile">Profile</a>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </div>
+    
+    {% if request.query_params.success == 'quest_completed' %}
+    <div class="success">🎉 Quest completed! XP earned!</div>
+    {% endif %}
+    
+    <div class="grid">
+        <div class="card">
+            <div class="stat">
+                <div class="stat-value">{{ level }}</div>
+                <div class="stat-label">Level</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="stat">
+                <div class="stat-value">{{ xp }}</div>
+                <div class="stat-label">Total XP</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="stat">
+                <div class="stat-value">{{ xp_to_next }}</div>
+                <div class="stat-label">XP to Next Level</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="stat">
+                <div class="stat-value">{{ streak }} 🔥</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2 style="margin-bottom: 16px;">Recent Quests</h2>
+        {% if recent_completions %}
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            {% for completion in recent_completions %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f5f5f5; border-radius: 8px;">
+                <span>{{ completion.quest_title }}</span>
+                <span style="color: #667eea; font-weight: bold;">+{{ completion.xp }} XP</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: #666;">No quests completed yet. <a href="/quests" style="color: #667eea;">Start your first quest!</a></p>
+        {% endif %}
+    </div>
+    
+    {% if badges %}
+    <div class="card">
+        <h2 style="margin-bottom: 16px;">Badges</h2>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            {% for badge in badges %}
+            <div style="text-align: center; padding: 16px; background: #f5f5f5; border-radius: 12px;">
+                <div style="font-size: 2em;">{{ badge.icon }}</div>
+                <div style="font-weight: bold; margin-top: 8px;">{{ badge.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

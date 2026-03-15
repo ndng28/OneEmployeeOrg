@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Quests - OneEmployeeOrg Academy{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>Available Quests 🗺️</h1>
+        <nav class="nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/quests">Quests</a>
+            <a href="/profile">Profile</a>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </div>
+    
+    {% if request.query_params.error == 'not_found' %}
+    <div class="error">Quest not found.</div>
+    {% endif %}
+    
+    <div class="grid">
+        {% for quest in quests %}
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                <h3 style="color: #667eea;">{{ quest.title }}</h3>
+                <span style="background: #667eea; color: white; padding: 4px 12px; border-radius: 12px; font-size: 14px;">{{ quest.category }}</span>
+            </div>
+            
+            <p style="color: #666; margin-bottom: 16px;">{{ quest.description }}</p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <span>⭐ Difficulty: {{ quest.difficulty }}/5</span>
+                <span style="color: #667eea; font-weight: bold;">🏆 {{ quest.xp_reward }} XP</span>
+            </div>
+            
+            <a href="/quests/{{ quest.id }}" class="btn" style="width: 100%; text-align: center;">Start Quest</a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if not quests %}
+    <div class="card" style="text-align: center; padding: 48px;">
+        <p style="font-size: 1.2em; color: #666;">No quests available right now. Check back later!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quest.title }} - OneEmployeeOrg Academy{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>{{ quest.title }}</h1>
+        <nav class="nav">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/quests">Quests</a>
+            <a href="/profile">Profile</a>
+            <a href="/auth/logout">Logout</a>
+        </nav>
+    </div>
+    
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+            <span style="background: #667eea; color: white; padding: 4px 12px; border-radius: 12px; font-size: 14px;">{{ quest.category }}</span>
+            <span style="color: #667eea; font-weight: bold; font-size: 1.2em;">🏆 {{ quest.xp_reward }} XP</span>
+        </div>
+        
+        <p style="font-size: 1.1em; margin-bottom: 24px; line-height: 1.6;">{{ quest.description }}</p>
+        
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+            <h4 style="margin-bottom: 12px;">Quest Details:</h4>
+            <ul style="margin-left: 20px; color: #666;">
+                <li>Difficulty: {{ quest.difficulty }} out of 5</li>
+                <li>Reward: {{ quest.xp_reward }} experience points</li>
+                <li>Type: {{ quest.category.title() }}</li>
+            </ul>
+        </div>
+        
+        <form action="/quests/{{ quest.id }}/complete" method="POST">
+            <button type="submit" class="btn" style="width: 100%; font-size: 1.2em;">
+                ✅ Complete Quest
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
