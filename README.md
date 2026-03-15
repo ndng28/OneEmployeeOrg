@@ -1,15 +1,44 @@
 # OneEmployeeOrg
 
-One human CEO, AI-powered operations.
+One human CEO, AI-powered operations. **Pivoting to K-12 Edu-tainment Platform.**
 
 ## About
 
-OneEmployeeOrg is a retail organization with:
-- **Storefronts**: Multiple locations handling diverse products
-- **Warehouse**: Central inventory management and distribution
-- **Vendor Network**: Supplier relationships and procurement workflows
+**Edu-tainment Platform**: Quest-based learning for K-12 students powered by 131+ AI Quest Masters. Students complete interactive quests, earn XP, badges, and levels while learning through personalized AI-guided experiences.
 
-The organization operates with AI agents fulfilling operational roles traditionally held by multiple employees.
+### Platform Features
+- **Gamification**: XP, levels, badges, streaks, leaderboards
+- **Quest Masters**: 131+ specialized AI agents from agency-agents
+- **Class Management**: Teacher dashboards, class codes, progress tracking
+- **Social Learning**: Team quests, class competitions, peer collaboration
+- **Personalization**: Adaptive difficulty, learning style detection
+
+**Original**: Retail organization with AI-powered operations (see [AGENTS.md](./AGENTS.md) for retail architecture).
+
+## Quick Start
+
+```bash
+# Install
+pip install -e .
+
+# Build quest index
+oneorg index
+
+# Start API server
+uvicorn oneorg.api.main:app --reload
+
+# View leaderboard
+oneorg leaderboard
+```
+
+## Documentation
+
+- **[docs/decisions.md](docs/decisions.md)** - Architecture decisions and rationale
+- **[docs/technical-notes.md](docs/technical-notes.md)** - Implementation details and gotchas
+- **[docs/usage.md](docs/usage.md)** - CLI and API usage guide
+- **[TODO.md](TODO.md)** - Prioritized task backlog
+
+## About (Original)
 
 ## AI Agent Architecture
 
