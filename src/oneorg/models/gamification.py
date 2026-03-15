@@ -3,13 +3,6 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from enum import Enum
 
-class BadgeRarity(str, Enum):
-    COMMON = "common"
-    UNCOMMON = "uncommon"
-    RARE = "rare"
-    EPIC = "epic"
-    LEGENDARY = "legendary"
-
 class BadgeCategory(str, Enum):
     MILESTONE = "milestone"
     STREAK = "streak"
@@ -32,7 +25,6 @@ class BadgeCriteria(BaseModel):
     criteria_type: str
     criteria_threshold: int
     xp_bonus: int = 0
-    rarity: BadgeRarity = BadgeRarity.COMMON
     is_secret: bool = False
 
 class Team(BaseModel):
