@@ -1,0 +1,31 @@
+# =============================================================================
+# OneEmployeeOrg Academy - Development Docker Compose
+# Overrides production compose for local development
+# =============================================================================
+
+version: "3.11"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: oneorg-app-dev
+    volumes:
+      # Mount source code for hot reload
+      - ./src:/app/src:ro
+      # Persist data
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///app/data/oneorg.db
+      - SECRET_KEY=dev-secret-not-for-production
+      - DEBUG=true
+    command: ["uvicorn", "oneorg.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app/src"]
+    depends_on: []
+    networks:
+      - oneorg-network
+
+  db:
+    # Disabled in dev - using SQLite
+    deploy:
+      replicas: 0
