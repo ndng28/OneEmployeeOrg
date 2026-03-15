@@ -3,6 +3,8 @@ from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 
+from oneorg.models.xp_system import XPCalculator, XPConfig, QuestAttempt
+
 try:
     from oneorg.db.models import Quest, QuestCompletion, Student, StudentBadge, Badge
 except ImportError:
@@ -53,9 +55,11 @@ async def complete_quest(
     student_id: int,
     quest_id: int,
     score: float = 1.0,
-    feedback: Optional[str] = None
+    feedback: Optional[str] = None,
+    time_spent_seconds: int = 300,
+    attempt_number: int = 1,
 ) -> dict:
-    """Complete a quest and award XP."""
+    """Complete a quest and award predictable XP."""
     if Quest is None or QuestCompletion is None or Student is None:
         raise ValueError("Database models not available")
     
@@ -76,20 +80,38 @@ async def complete_quest(
     if result.scalar():
         raise ValueError("Quest already completed")
     
-    # Create completion
-    xp_earned = int(quest.xp_reward * score)
+    # Get student for streak info
+    result = await db.execute(select(Student).where(Student.id == student_id))
+    student = result.scalar()
+    if not student:
+        raise ValueError(f"Student {student_id} not found")
+    
+    # Calculate XP deterministically using XPCalculator
+    calculator = XPCalculator(XPConfig())
+    attempt = QuestAttempt(
+        difficulty=quest.difficulty,
+        accuracy=score,
+        time_spent_seconds=time_spent_seconds,
+        attempt_number=attempt_number,
+        hints_used=0,  # TODO: Track hints used
+        current_streak_days=student.current_streak,
+    )
+    
+    xp_result = calculator.calculate_quest_xp(attempt)
+    xp_earned = xp_result["total"]
+    
+    # Create completion with XP breakdown for transparency
     completion = QuestCompletion(
         student_id=student_id,
         quest_id=quest_id,
         score=score,
         xp_earned=xp_earned,
-        feedback=feedback
+        feedback=feedback,
+        xp_breakdown=str(xp_result["breakdown"])  # Store for display
     )
     db.add(completion)
     
     # Update student XP
-    result = await db.execute(select(Student).where(Student.id == student_id))
-    student = result.scalar()
     student.xp += xp_earned
     student.updated_at = datetime.utcnow()
     
@@ -113,7 +135,9 @@ async def complete_quest(
         "xp_earned": xp_earned,
         "total_xp": student.xp,
         "level": (student.xp // 500) + 1,
-        "streak": student.current_streak
+        "streak": student.current_streak,
+        "xp_breakdown": xp_result["breakdown"],
+        "xp_formula": xp_result["formula"]
     }
 
 

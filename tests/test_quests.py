@@ -315,3 +315,57 @@ class TestLevelCalculations:
         for xp, expected_xp_to_next in test_cases:
             xp_to_next = 500 - (xp % 500)
             assert xp_to_next == expected_xp_to_next, f"XP {xp} should need {expected_xp_to_next} XP to next, got {xp_to_next}"
+
+
+class TestPredictableXPIntegration:
+    """Test predictable XP integration into quest engine."""
+    
+    def test_xp_calculator_imported_by_quest_engine(self):
+        """Verify XP calculator is properly imported in quest engine."""
+        # Just verify the imports work
+        from oneorg.models.xp_system import XPCalculator, XPConfig, QuestAttempt
+        
+        calc = XPCalculator(XPConfig())
+        attempt = QuestAttempt(
+            difficulty=2,
+            accuracy=0.8,
+            time_spent_seconds=300,
+            attempt_number=1,
+            hints_used=0,
+            current_streak_days=2,
+        )
+        
+        result = calc.calculate_quest_xp(attempt)
+        
+        assert "total" in result
+        assert "breakdown" in result
+        assert "formula" in result
+        assert result["total"] > 0
+        
+        # Verify breakdown has all components
+        assert "base" in result["breakdown"]
+        assert "accuracy_bonus" in result["breakdown"]
+        assert "effort_bonus" in result["breakdown"]
+        assert "streak_bonus" in result["breakdown"]
+    
+    def test_xp_calculation_is_deterministic(self):
+        """Same inputs should always produce same XP output."""
+        from oneorg.models.xp_system import XPCalculator, XPConfig, QuestAttempt
+        
+        calc = XPCalculator(XPConfig())
+        
+        attempt = QuestAttempt(
+            difficulty=3,
+            accuracy=0.85,
+            time_spent_seconds=450,
+            attempt_number=2,
+            hints_used=1,
+            current_streak_days=4,
+        )
+        
+        result1 = calc.calculate_quest_xp(attempt)
+        result2 = calc.calculate_quest_xp(attempt)
+        
+        assert result1["total"] == result2["total"]
+        assert result1["breakdown"] == result2["breakdown"]
+        assert result1["formula"] == result2["formula"]

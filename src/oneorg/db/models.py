@@ -58,6 +58,7 @@ class QuestCompletion(Base):
     quest_id = Column(Integer, ForeignKey("quests.id"))
     score = Column(Float, default=0.0)
     xp_earned = Column(Integer, default=0)
+    xp_breakdown = Column(Text)  # JSON string with XP breakdown for transparency
     feedback = Column(Text)
     completed_at = Column(DateTime, default=datetime.utcnow)
     
