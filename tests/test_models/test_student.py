@@ -63,6 +63,28 @@ def test_badge_award():
     )
     
     student.award_badge(badge)
-    
+
     assert len(student.badges) == 1
     assert student.has_badge("first-quest")
+
+
+def test_student_has_computed_age_mode():
+    student = StudentProgress(
+        student_id="stu_001",
+        name="Alice",
+        grade_level=5,
+    )
+
+    from oneorg.models.age_mode import AgeMode
+    assert student.age_mode == AgeMode.YOUNG
+
+
+def test_age_mode_from_grade_10():
+    student = StudentProgress(
+        student_id="stu_002",
+        name="Bob",
+        grade_level=10,
+    )
+
+    from oneorg.models.age_mode import AgeMode
+    assert student.age_mode == AgeMode.MIDDLE

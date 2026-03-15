@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field, computed_field
 
 from oneorg.models.gamification import StreakData, LeaderboardVisibility
+from oneorg.models.age_mode import AgeMode
 
 XP_PER_LEVEL = 500
 
@@ -49,7 +50,12 @@ class StudentProgress(BaseModel):
     @property
     def xp_to_next_level(self) -> int:
         return XP_PER_LEVEL - (self.xp % XP_PER_LEVEL)
-    
+
+    @computed_field
+    @property
+    def age_mode(self) -> AgeMode:
+        return AgeMode.from_grade(self.grade_level)
+
     def add_quest_completion(self, completion: QuestCompletion) -> None:
         self.quests_completed.append(completion)
         self.add_xp(completion.xp_earned)
