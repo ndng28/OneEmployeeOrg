@@ -12,9 +12,7 @@ class BadgeCategory(str, Enum):
 
 class StreakData(BaseModel):
     current_streak: int = 0
-    longest_streak: int = 0
     last_activity_date: Optional[date] = None
-    streak_freeze_remaining: int = 3
 
 class BadgeCriteria(BaseModel):
     badge_id: str

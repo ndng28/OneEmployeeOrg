@@ -12,12 +12,13 @@ class LeaderboardManager:
         scope: LeaderboardScope = LeaderboardScope.GLOBAL,
         limit: int = 100,
         class_code: str | None = None,
+        include_opted_out: bool = False,
     ) -> list[LeaderboardEntry]:
         students = []
         
         for student_id in self.tracker.list_all():
             student = self.tracker.load(student_id)
-            if student and student.leaderboard_settings.show_on_leaderboard:
+            if student and (include_opted_out or student.leaderboard_settings.show_on_leaderboard):
                 students.append(student)
         
         students.sort(key=lambda s: s.xp, reverse=True)
@@ -35,7 +36,7 @@ class LeaderboardManager:
                 xp=student.xp,
                 level=student.level,
                 quests_completed=len(student.quests_completed),
-                current_streak=student.streak.current_streak,
+                current_streak=student.current_streak,
                 team_id=student.team_id,
             ))
             prev_xp = student.xp
