@@ -1,0 +1,14 @@
+# Code owners for OneEmployeeOrg
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owner
+* @ndng28
+
+# Documentation
+/docs/ @ndng28
+*.md @ndng28
+
+# Configuration
+.env.example @ndng28
+docker-compose*.yml @ndng28
+Dockerfile* @ndng28
