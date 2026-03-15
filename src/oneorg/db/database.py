@@ -1,14 +1,19 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from pathlib import Path
+from oneorg.config import get_settings
 
-DATA_DIR = Path(__file__).parent.parent.parent.parent / "data"
-DATA_DIR.mkdir(exist_ok=True)
+settings = get_settings()
 
-DATABASE_URL = f"sqlite+aiosqlite:///{DATA_DIR / 'oneorg.db'}"
+# Handle both SQLite and PostgreSQL
+if settings.database_url.startswith("sqlite"):
+    # SQLite: ensure data directory exists
+    db_path = settings.database_url.replace("sqlite+aiosqlite:///", "")
+    data_dir = Path(db_path).parent
+    data_dir.mkdir(parents=True, exist_ok=True)
 
 engine = create_async_engine(
-    DATABASE_URL,
+    settings.database_url,
     echo=False,
     future=True,
 )
