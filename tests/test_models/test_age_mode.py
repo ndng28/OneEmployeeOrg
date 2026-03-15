@@ -17,7 +17,7 @@ def test_age_mode_computed_field():
     student = StudentProgress(
         student_id="stu_test",
         name="Test",
-        grade_level=6,
+        grade_level=10,
     )
 
     assert student.age_mode == AgeMode.MIDDLE
