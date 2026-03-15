@@ -10,6 +10,7 @@ from oneorg.gates.evaluator import DecisionEvaluator, Decision
 from oneorg.gates.thresholds import ThresholdConfig
 from oneorg.state.tracker import StateTracker
 from oneorg.models.student import StudentProgress, QuestCompletion, Badge
+from oneorg.gamification.leaderboard import LeaderboardManager
 
 console = Console()
 
@@ -178,6 +179,33 @@ def complete(student_id, quest_id, quest_master, xp, score):
     console.print(f"  XP earned: +{xp}")
     if level_up > 0:
         console.print(f"  [bold yellow]LEVEL UP! Now level {student.level}[/bold yellow]")
+
+@main.command()
+@click.option("--limit", "-l", default=10)
+def leaderboard(limit):
+    """Show top students on the leaderboard."""
+    tracker = StateTracker(DEFAULT_STATE_DIR)
+    manager = LeaderboardManager(tracker)
+    
+    entries = manager.get_leaderboard(limit=limit)
+    
+    table = Table(title="Leaderboard")
+    table.add_column("Rank", style="bold")
+    table.add_column("Student")
+    table.add_column("Level")
+    table.add_column("XP")
+    table.add_column("Streak")
+    
+    for entry in entries:
+        table.add_row(
+            f"#{entry.rank}",
+            entry.display_name,
+            str(entry.level),
+            str(entry.xp),
+            f"🔥{entry.current_streak}" if entry.current_streak > 0 else "",
+        )
+    
+    console.print(table)
 
 if __name__ == "__main__":
     main()
