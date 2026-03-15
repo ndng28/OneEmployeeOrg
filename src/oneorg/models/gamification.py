@@ -36,6 +36,6 @@ class Team(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
 
 class LeaderboardVisibility(BaseModel):
-    show_on_leaderboard: bool = True
+    show_on_leaderboard: bool = False
     display_name: Optional[str] = None
     show_achievements: bool = True
