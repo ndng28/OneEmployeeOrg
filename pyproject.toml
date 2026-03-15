@@ -22,6 +22,9 @@ dependencies = [
 [project.scripts]
 oneorg = "oneorg.cli:main"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
