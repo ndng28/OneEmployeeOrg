@@ -22,6 +22,7 @@ class Student(Base):
     student_id = Column(String, unique=True, index=True)  # public-facing ID
     name = Column(String, nullable=False)
     grade_level = Column(Integer, nullable=False)
+    age_mode = Column(String, default="middle")  # young, middle, teen
     xp = Column(Integer, default=0)
     current_streak = Column(Integer, default=0)
     longest_streak = Column(Integer, default=0)
