@@ -1,6 +1,8 @@
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel, Field, computed_field
+
+from oneorg.models.gamification import StreakData, LeaderboardVisibility
 
 XP_PER_LEVEL = 500
 
@@ -29,6 +31,14 @@ class StudentProgress(BaseModel):
     current_quest: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
+    
+    # Gamification fields
+    streak: StreakData = Field(default_factory=StreakData)
+    team_id: Optional[str] = None
+    leaderboard_settings: LeaderboardVisibility = Field(default_factory=LeaderboardVisibility)
+    daily_xp: int = 0
+    weekly_xp: int = 0
+    title: Optional[str] = None
     
     @computed_field
     @property
@@ -65,3 +75,24 @@ class StudentProgress(BaseModel):
     def start_quest(self, quest_id: str) -> None:
         self.current_quest = quest_id
         self.updated_at = datetime.now()
+    
+    def update_streak(self) -> bool:
+        """Update streak on activity. Returns True if streak continued."""
+        today = date.today()
+        
+        if self.streak.last_activity_date == today:
+            return False
+        
+        yesterday = today - timedelta(days=1)
+        if self.streak.last_activity_date == yesterday:
+            self.streak.current_streak += 1
+        elif self.streak.last_activity_date:
+            self.streak.current_streak = 1
+        
+        self.streak.last_activity_date = today
+        self.streak.longest_streak = max(self.streak.longest_streak, self.streak.current_streak)
+        self.updated_at = datetime.now()
+        return True
+    
+    def get_display_name(self) -> str:
+        return self.leaderboard_settings.display_name or self.name
