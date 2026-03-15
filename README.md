@@ -1,124 +1,169 @@
-# OneEmployeeOrg
+# OneEmployeeOrg Academy
 
-One human CEO, AI-powered operations. **Pivoting to K-12 Edu-tainment Platform.**
+Quest-based learning platform for K-12 students. Students complete interactive quests, earn XP, badges, and levels while learning through personalized experiences.
 
-## About
+## Features
 
-**Edu-tainment Platform**: Quest-based learning for K-12 students powered by 131+ AI Quest Masters. Students complete interactive quests, earn XP, badges, and levels while learning through personalized AI-guided experiences.
-
-### Platform Features
-- **Gamification**: XP, levels, badges, streaks, leaderboards
-- **Quest Masters**: 131+ specialized AI agents from agency-agents
-- **Class Management**: Teacher dashboards, class codes, progress tracking
-- **Social Learning**: Team quests, class competitions, peer collaboration
-- **Personalization**: Adaptive difficulty, learning style detection
-
-**Original**: Retail organization with AI-powered operations (see [AGENTS.md](./AGENTS.md) for retail architecture).
+- **Student Accounts** - Email/password authentication with secure sessions
+- **Quest System** - Complete quests to earn XP and progress
+- **Gamification** - Levels, XP tracking, streaks, badges
+- **Progress Tracking** - Dashboard showing stats, recent completions, achievements
+- **Responsive UI** - Beautiful web interface with HTMX
 
 ## Quick Start
 
+### Option 1: Docker (Recommended)
+
 ```bash
-# Install
+# Clone the repository
+git clone https://github.com/ndng28/OneEmployeeOrg.git
+cd OneEmployeeOrg
+
+# Set up environment
+cp .env.example .env
+# Edit .env and set a secure SECRET_KEY
+
+# Start with Docker Compose
+docker compose up --build -d
+
+# Visit http://localhost:8000
+```
+
+### Option 2: Local Development
+
+```bash
+# Install dependencies
 pip install -e .
 
-# Build quest index
-oneorg index
+# Set up environment
+cp .env.example .env
+# Edit .env and set SECRET_KEY
 
-# Start API server
+# Start the server
 uvicorn oneorg.api.main:app --reload
 
-# View leaderboard
-oneorg leaderboard
+# Visit http://localhost:8000
+```
+
+## Docker Development
+
+### Development Mode (Hot Reload)
+
+```bash
+# Start with hot reload and exposed PostgreSQL
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+
+# Changes to src/ are reflected immediately
+```
+
+### Production Mode
+
+```bash
+# Start production stack
+docker compose up --build -d
+
+# View logs
+docker compose logs -f app
+
+# Stop
+docker compose down
+
+# Reset database (⚠️ deletes all data)
+docker compose down -v
+```
+
+## Configuration
+
+All configuration is via environment variables (see `.env.example`):
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `SECRET_KEY` | JWT signing key (required) | - |
+| `DATABASE_URL` | Database connection string | SQLite |
+| `DEBUG` | Debug mode | false |
+| `ACCESS_TOKEN_EXPIRE_DAYS` | Session lifetime | 7 |
+
+### Database Options
+
+**SQLite (Local Development):**
+```
+DATABASE_URL=sqlite+aiosqlite:///data/oneorg.db
+```
+
+**PostgreSQL (Docker/Production):**
+```
+DATABASE_URL=postgresql+asyncpg://oneorg:oneorg@db:5432/oneorg
+```
+
+## Project Structure
+
+```
+OneEmployeeOrg/
+├── src/oneorg/
+│   ├── api/              # FastAPI routes and templates
+│   │   ├── routes/       # Auth, quests, UI routes
+│   │   └── templates/    # Jinja2 HTML templates
+│   ├── db/               # Database models and connection
+│   ├── services/         # Business logic (auth, quests)
+│   └── config.py         # Pydantic settings
+├── tests/                # Test suite
+├── Dockerfile            # Production container
+├── docker-compose.yml    # Docker orchestration
+├── .env.example          # Environment template
+└── docs/                 # Documentation
 ```
 
 ## Documentation
 
-- **[docs/decisions.md](docs/decisions.md)** - Architecture decisions and rationale
-- **[docs/technical-notes.md](docs/technical-notes.md)** - Implementation details and gotchas
-- **[docs/usage.md](docs/usage.md)** - CLI and API usage guide
-- **[TODO.md](TODO.md)** - Prioritized task backlog
-
-## About (Original)
-
-## AI Agent Architecture
-
-### Hierarchy
-
-```
-CEO (Human)
-    │
-    ▼
-Chief of Staff (L1 - Orchestration Layer)
-    │
-    ├── AR Agent (L1 - Agent Resources)
-    │       │
-    │       └── agency-agents repo (IC pool)
-    │
-    └── Coordinators (L2 - Coordination Layer)
-            │
-            ├── Operations Coordinator
-            ├── Finance Coordinator
-            └── Inventory Coordinator
-```
-
-### Agent Levels
-
-- **L1: Orchestration Layer** - Chief of Staff (primary orchestrator) and AR Agent (hiring manager)
-- **L2: Coordination Layer** - Domain coordinators managing ICs within their domain
-- **L3: Individual Contributors** - Execution agents from [agency-agents](https://github.com/msitarzewski/agency-agents)
-
-See [AGENTS.md](./AGENTS.md) for complete agent definitions and decision frameworks.
+- **[docs/decisions.md](docs/decisions.md)** - Architecture decisions
+- **[docs/technical-notes.md](docs/technical-notes.md)** - Implementation details
+- **[docs/usage.md](docs/usage.md)** - CLI usage guide
+- **[TODO.md](TODO.md)** - Development roadmap
 
 ## Development
 
-### Prerequisites
-- OpenCode CLI
-- Git (with submodule support)
+### Running Tests
 
-### Getting Started
 ```bash
-git clone --recurse-submodules https://github.com/ndng28/OneEmployeeOrg.git
-cd OneEmployeeOrg
+pytest tests/ -v
 ```
 
-### Project Structure
-```
-OneEmployeeOrg/
-├── AGENTS.md                # AI agent configuration and protocols
-├── README.md               # This file
-├── .gitignore              # Git ignore patterns
-├── agents/
-│   ├── L1/                 # L1 agent definitions (Chief of Staff, AR)
-│   ├── L2/                 # L2 coordinator definitions
-│   ├── L3/                 # L3 IC references (ephemeral)
-│   └── roster.yaml         # Structured agent registry
-└── vendor/
-    └── agency-agents/      # Git submodule (IC pool)
+### CLI Commands
+
+```bash
+# View leaderboard
+oneorg leaderboard
+
+# Check student progress
+oneorg student stu_001
+
+# Complete a quest
+oneorg complete stu_001 quest_001 "Quest Master"
 ```
 
-## Superpowers Skills
+## Architecture
 
-This project uses a structured skill system for AI agent workflows:
-- Brainstorming before creative work
-- TDD for feature development  
-- Systematic debugging for issues
-- Verification before claiming completion
+### Tech Stack
 
-Full skill registry in [AGENTS.md](./AGENTS.md#superpowers-skills-registry).
+- **Backend**: FastAPI + SQLAlchemy (async)
+- **Database**: SQLite (dev) / PostgreSQL (prod)
+- **Frontend**: Jinja2 + HTMX
+- **Auth**: JWT tokens + bcrypt
+- **Containerization**: Docker + Docker Compose
 
-Powered by [obra/superpowers](https://github.com/obra/superpowers).
+### Docker Services
 
-## Roadmap
-
-### Phase 1 (Current)
-- OpenCode CLI support
-- Core agentic scaffolding with L1/L2/L3 hierarchy
-- Operations, Finance, and Inventory coordinators
-
-### Phase 2 (Planned)
-- Additional CLI support (Ollama, Claude, etc.)
-- Extended coordinator roles (Sales, Support, Marketing)
-- Vendor integration workflows
+```
+┌─────────────────────────────────────┐
+│         Docker Compose              │
+│                                     │
+│  ┌──────────┐      ┌────────────┐  │
+│  │   App    │      │ PostgreSQL │  │
+│  │ FastAPI  │──────│   16       │  │
+│  │ Port 8000│      │ Port 5432  │  │
+│  └──────────┘      └────────────┘  │
+└─────────────────────────────────────┘
+```
 
 ## License
 
