@@ -181,15 +181,54 @@ def complete(student_id, quest_id, quest_master, xp, score):
         console.print(f"  [bold yellow]LEVEL UP! Now level {student.level}[/bold yellow]")
 
 @main.command()
+@click.argument("student_id")
+def progress(student_id):
+    """Show personal progress and achievements (replaces leaderboard)."""
+    tracker = StateTracker(DEFAULT_STATE_DIR)
+    
+    if not tracker.exists(student_id):
+        console.print(f"[red]Error:[/red] Student {student_id} not found")
+        return
+    
+    student = tracker.load(student_id)
+    
+    # Personal progress display
+    console.print(f"\n[bold]{student.name}[/bold]'s Personal Progress")
+    console.print("=" * 50)
+    
+    console.print(f"\n📊 [bold]Level {student.level}[/bold]")
+    console.print(f"   XP: {student.xp} ({student.xp_to_next_level} to next level)")
+    console.print(f"   Grade: {student.grade_level}")
+    
+    # Calendar summary
+    if student.calendar:
+        month_data = student.calendar.get_recent_month_summary()
+        console.print(f"\n📅 {month_data['message']}")
+    
+    console.print(f"\n🎯 Quests Completed: {len(student.quests_completed)}")
+    
+    if student.badges:
+        console.print(f"\n🏅 Badges Earned ({len(student.badges)}):")
+        for badge in student.badges[-5:]:  # Show last 5
+            console.print(f"   {badge.icon} {badge.name}")
+
+
+@main.command()
 @click.option("--limit", "-l", default=10)
-def leaderboard(limit):
-    """Show top students on the leaderboard."""
+@click.option("--include-me", "-m", is_flag=True, help="Include me even if opted out")
+def leaderboard(limit, include_me):
+    """Show leaderboard (opt-in only)."""
     tracker = StateTracker(DEFAULT_STATE_DIR)
     manager = LeaderboardManager(tracker)
     
-    entries = manager.get_leaderboard(limit=limit)
+    entries = manager.get_leaderboard(limit=limit, include_opted_out=include_me)
     
-    table = Table(title="Leaderboard")
+    if not entries:
+        console.print("[yellow]No students have opted in to the leaderboard yet.[/yellow]")
+        console.print("Use 'oneorg opt-in' to share your progress!")
+        return
+    
+    table = Table(title="Leaderboard (Opt-In Only)")
     table.add_column("Rank", style="bold")
     table.add_column("Student")
     table.add_column("Level")
