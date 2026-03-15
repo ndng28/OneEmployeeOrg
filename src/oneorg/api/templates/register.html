@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Register - OneEmployeeOrg Academy{% endblock %}
+
+{% block content %}
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <div class="card" style="width: 100%; max-width: 400px;">
+        <h1 style="text-align: center; margin-bottom: 24px; color: #667eea;">Join the Academy!</h1>
+        
+        {% if request.query_params.error == 'email_exists' %}
+        <div class="error">This email is already registered. <a href="/login">Sign in instead</a>?</div>
+        {% endif %}
+        
+        <form action="/auth/register" method="POST">
+            <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8">
+            </div>
+            
+            <div class="form-group">
+                <label for="grade_level">Grade Level</label>
+                <select id="grade_level" name="grade_level" required>
+                    <option value="">Select your grade...</option>
+                    {% for i in range(1, 13) %}
+                    <option value="{{ i }}">Grade {{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn" style="width: 100%;">Create Account</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 20px;">
+            Already have an account? <a href="/login" style="color: #667eea;">Sign in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
