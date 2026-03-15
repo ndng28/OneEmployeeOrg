@@ -2,7 +2,8 @@ from datetime import date, datetime, timedelta
 from typing import Optional
 from pydantic import BaseModel, Field, computed_field
 
-from oneorg.models.gamification import StreakData, LeaderboardVisibility
+from oneorg.models.gamification import LeaderboardVisibility
+from oneorg.models.calendar import ActivityCalendar
 from oneorg.models.age_mode import AgeMode
 
 XP_PER_LEVEL = 500
@@ -34,12 +35,28 @@ class StudentProgress(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
     
     # Gamification fields
-    streak: StreakData = Field(default_factory=StreakData)
+    calendar: ActivityCalendar = Field(default_factory=ActivityCalendar)
     team_id: Optional[str] = None
     leaderboard_settings: LeaderboardVisibility = Field(default_factory=LeaderboardVisibility)
     daily_xp: int = 0
     weekly_xp: int = 0
     title: Optional[str] = None
+    
+    # Legacy compatibility - computed property for current streak
+    @computed_field
+    @property
+    def current_streak(self) -> int:
+        """Current consecutive days (for backward compatibility)."""
+        return self.calendar.get_consecutive_days()
+    
+    @computed_field  
+    @property
+    def last_activity_date(self) -> Optional[date]:
+        """Last activity date for display."""
+        # Find most recent date
+        if not self.calendar.activity_dates:
+            return None
+        return max(date.fromisoformat(d) for d in self.calendar.activity_dates)
     
     @computed_field
     @property
@@ -82,23 +99,15 @@ class StudentProgress(BaseModel):
         self.current_quest = quest_id
         self.updated_at = datetime.now()
     
-    def update_streak(self) -> bool:
-        """Update streak on activity. Returns True if streak continued."""
-        today = date.today()
+    def mark_activity(self, activity_date: Optional[date] = None) -> bool:
+        """Mark activity on a date (defaults to today)."""
+        if activity_date is None:
+            activity_date = date.today()
         
-        if self.streak.last_activity_date == today:
-            return False
-        
-        yesterday = today - timedelta(days=1)
-        if self.streak.last_activity_date == yesterday:
-            self.streak.current_streak += 1
-        elif self.streak.last_activity_date:
-            self.streak.current_streak = 1
-        
-        self.streak.last_activity_date = today
-        self.streak.longest_streak = max(self.streak.longest_streak, self.streak.current_streak)
-        self.updated_at = datetime.now()
-        return True
+        was_new = self.calendar.mark_activity(activity_date)
+        if was_new:
+            self.updated_at = datetime.now()
+        return was_new
     
     def get_display_name(self) -> str:
         return self.leaderboard_settings.display_name or self.name

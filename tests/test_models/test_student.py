@@ -88,3 +88,29 @@ def test_age_mode_from_grade_10():
 
     from oneorg.models.age_mode import AgeMode
     assert student.age_mode == AgeMode.MIDDLE
+
+
+def test_student_has_activity_calendar():
+    from oneorg.models.calendar import ActivityCalendar
+    
+    student = StudentProgress(
+        student_id="stu_001",
+        name="Alice",
+        grade_level=5,
+    )
+    
+    assert isinstance(student.calendar, ActivityCalendar)
+
+
+def test_student_no_longest_streak():
+    student = StudentProgress(
+        student_id="stu_001",
+        name="Alice",
+        grade_level=5,
+    )
+    
+    # Should not have longest_streak attribute
+    assert not hasattr(student, 'longest_streak')
+    
+    # Calendar should not have it either
+    assert not hasattr(student.calendar, 'longest_streak')
