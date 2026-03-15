@@ -1,0 +1,64 @@
+version: 1
+badges:
+  - badge_id: first_try
+    name: "First Step"
+    description: "Completed your first quest"
+    icon: 👣
+    category: milestone
+    criteria_type: quest_count
+    criteria_threshold: 1
+    xp_bonus: 0
+
+  - badge_id: persistent_learner
+    name: "Persistent Learner"
+    description: "Completed a quest after multiple attempts"
+    icon: 🎯
+    category: mastery
+    criteria_type: quest_with_retries
+    criteria_threshold: 1
+    xp_bonus: 0
+
+  - badge_id: deep_diver
+    name: "Deep Diver"
+    description: "Spent 15+ minutes on a single quest"
+    icon: 🌊
+    category: mastery
+    criteria_type: time_on_quest
+    criteria_threshold: 900  # 15 minutes in seconds
+    xp_bonus: 0
+
+  - badge_id: explorer
+    name: "Quest Explorer"
+    description: "Tried quests from 3 different categories"
+    icon: 🗺️
+    category: exploration
+    criteria_type: categories_attempted
+    criteria_threshold: 3
+    xp_bonus: 0
+
+  - badge_id: reflective
+    name: "Reflective Learner"
+    description: "Revisited a quest to improve your score"
+    icon: 🪞
+    category: mastery
+    criteria_type: quest_revisits
+    criteria_threshold: 1
+    xp_bonus: 0
+
+  - badge_id: tenacious
+    name: "Tenacious Spirit"
+    description: "Kept trying even when it was challenging"
+    icon: 🧗
+    category: mastery
+    criteria_type: low_accuracy_completion
+    criteria_threshold: 1  # Completed with < 70% accuracy but kept trying
+    xp_bonus: 0
+
+  - badge_id: consistent
+    name: "Consistent Learner"
+    description: "Active on 5 different days"
+    icon: 📅
+    category: milestone
+    criteria_type: active_days
+    criteria_threshold: 5
+    xp_bonus: 0

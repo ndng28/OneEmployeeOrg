@@ -41,6 +41,17 @@ class StudentProgress(BaseModel):
     daily_xp: int = 0
     weekly_xp: int = 0
     title: Optional[str] = None
+
+    # Effort tracking fields (for effort-based badges)
+    total_attempts: int = Field(default=0, ge=0)
+    total_time_spent: int = Field(default=0, ge=0)  # in seconds
+    categories_attempted: set[str] = Field(default_factory=set)
+    revisits: int = Field(default=0, ge=0)
+    collaborations: int = Field(default=0, ge=0)
+    completions_with_retries: int = Field(default=0, ge=0)
+    max_time_on_quest: int = Field(default=0, ge=0)  # in seconds
+    quest_revisits: int = Field(default=0, ge=0)
+    persistent_completions: int = Field(default=0, ge=0)
     
     # Legacy compatibility - computed property for current streak
     @computed_field

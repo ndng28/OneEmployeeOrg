@@ -48,10 +48,17 @@ class BadgeManager:
         checkers = {
             "quest_count": lambda s, t: len(s.quests_completed) >= t,
             "level": lambda s, t: s.level >= t,
-            "streak_days": lambda s, t: s.streak.current_streak >= t,
+            "streak_days": lambda s, t: s.calendar.get_consecutive_days() >= t,
             "xp_total": lambda s, t: s.xp >= t,
+            # New effort-based criteria
+            "quest_with_retries": lambda s, t: s.completions_with_retries >= t,
+            "time_on_quest": lambda s, t: s.max_time_on_quest >= t,
+            "categories_attempted": lambda s, t: len(s.categories_attempted) >= t,
+            "quest_revisits": lambda s, t: s.quest_revisits >= t,
+            "low_accuracy_completion": lambda s, t: s.persistent_completions >= t,
+            "active_days": lambda s, t: s.calendar.activity_count >= t,
         }
-        
+
         checker = checkers.get(criteria.criteria_type)
         if checker:
             return checker(student, criteria.criteria_threshold)
@@ -82,7 +89,14 @@ class BadgeManager:
         values = {
             "quest_count": len(student.quests_completed),
             "level": student.level,
-            "streak_days": student.streak.current_streak,
+            "streak_days": student.calendar.get_consecutive_days(),
             "xp_total": student.xp,
+            # New effort-based criteria
+            "quest_with_retries": student.completions_with_retries,
+            "time_on_quest": student.max_time_on_quest,
+            "categories_attempted": len(student.categories_attempted),
+            "quest_revisits": student.quest_revisits,
+            "low_accuracy_completion": student.persistent_completions,
+            "active_days": student.calendar.activity_count,
         }
         return values.get(criteria_type, 0)
