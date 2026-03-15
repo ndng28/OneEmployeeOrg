@@ -1,7 +1,7 @@
 import yaml
 from pathlib import Path
 from pydantic import BaseModel
-from oneorg.models.gamification import BadgeCriteria, BadgeCategory, BadgeRarity
+from oneorg.models.gamification import BadgeCriteria, BadgeCategory
 from oneorg.models.student import StudentProgress, Badge
 
 class BadgeDefinition(BaseModel):
@@ -70,7 +70,6 @@ class BadgeManager:
                 "badge_id": badge_id,
                 "name": criteria.name,
                 "icon": criteria.icon,
-                "rarity": criteria.rarity.value,
                 "earned": student.has_badge(badge_id),
                 "current": current,
                 "target": criteria.criteria_threshold,
